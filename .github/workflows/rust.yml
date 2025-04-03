@@ -16,7 +16,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -37,7 +37,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-binary
-          path: target/release/libtgcrypto*
+          path: |
+            ${{ runner.os == 'Windows' && 'target/release/tgcrypto.dll' || 'target/release/libtgcrypto*' }}
 
 
   release:
