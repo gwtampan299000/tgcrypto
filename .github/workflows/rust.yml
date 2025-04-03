@@ -67,6 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v2.2.1
         with:
           tag_name: "v${{ steps.set_tag.outputs.version }}"
-          files: artifacts/*/*
+          files: artifacts/**/*.(so|dll|dylib)
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
