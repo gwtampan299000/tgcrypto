@@ -1,6 +1,35 @@
 #!/bin/bash
 set -e
 
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if command -v apt-get &>/dev/null; then
+        echo "Ubuntu/Debian detected. Installing LLVM & Clang..."
+        sudo apt-get update
+        sudo apt-get install -y llvm-dev libclang-dev clang
+    elif command -v pacman &>/dev/null; then
+        echo "Arch Linux detected. Installing LLVM & Clang..."
+        sudo pacman -Syu --noconfirm llvm clang
+    elif command -v dnf &>/dev/null; then
+        echo "Fedora detected. Installing LLVM & Clang..."
+        sudo dnf install -y llvm-devel clang
+    else
+        echo "Unsupported Linux distribution. Please install LLVM & Clang manually"
+        exit 1
+    fi
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "macOS detected. Installing LLVM & Clang via Homebrew..."
+    if ! command -v brew &>/dev/null; then
+        echo "Homebrew not found. Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    brew update
+    brew install llvm
+else
+    echo "Unsupported OS : $OSTYPE"
+    exit 1
+fi
+
 if ! command -v cargo &> /dev/null; then
     echo "Cargo is not installed. Installing Rust toolchain..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
