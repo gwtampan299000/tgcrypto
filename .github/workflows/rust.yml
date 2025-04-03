@@ -58,12 +58,9 @@ jobs:
       - name: Set release tag
         id: set_tag
         run: |
-         if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-           TAG_NAME=${GITHUB_REF#refs/tags/}
-         else
-           TAG_NAME="default-tag"
-         fi
-         echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          VERSION=$(grep -oP -m 1 'version = "\K[A-Za-z0-9.]+"' Cargo.toml)
+          echo "Library Version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2.2.1
