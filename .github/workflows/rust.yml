@@ -58,7 +58,7 @@ jobs:
       - name: Set release tag
         id: set_tag
         run: |
-          VERSION=$(grep -oP -m 1 'version = "\K[A-Za-z0-9.]+"' Cargo.toml)
+          VERSION=$(grep -oP -m 1 'version = "(\K[A-Za-z0-9.]+?)"' Cargo.toml)
           echo "Library Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
