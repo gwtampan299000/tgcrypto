@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-20.04, windows-latest, windows-2019, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -29,7 +29,7 @@ jobs:
         run: ls -l target/release/
 
       - name: Upload built library
-        uses: actions/upload-artifact@v3.3.1
+        uses: actions/upload-artifact@v2
         with:
           name: rust-shared-lib-${{ matrix.os }}
           path: target/release/
