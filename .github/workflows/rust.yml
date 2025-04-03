@@ -55,10 +55,20 @@ jobs:
         with:
           path: artifacts
 
+      - name: Set release tag
+        id: set_tag
+        run: |
+         if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+           TAG_NAME=${GITHUB_REF#refs/tags/}
+         else
+           TAG_NAME="default-tag"
+         fi
+         echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: "${GITHUB_REF#refs/tags/}"
+          tag_name: "v${{ steps.set_tag.outputs.tag_name }}"
           files: artifacts/*/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
