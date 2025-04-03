@@ -2,11 +2,8 @@ name: Rust
 
 on:
   push:
-    branches: [ "main" ]
     tags:
       - "v*.*.*"
-  pull_request:
-    branches: [ "main" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -29,11 +26,14 @@ jobs:
       - name: Build project
         run: cargo build --release
 
+      - name: List build artifacts
+        run: ls -l target/release/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-binary
-          path: target/release/tgcrypto
+          path: target/release/libtgcrypto*
 
   release:
     needs: build
