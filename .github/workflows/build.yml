@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-binary
-          path: target/release/your_binary_name
+          path: target/release/tgcrypto
 
   release:
     needs: build
