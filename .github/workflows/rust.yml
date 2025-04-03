@@ -36,6 +36,7 @@ jobs:
           name: ${{ runner.os }}-binary
           path: target/release/libtgcrypto*
 
+
   release:
     needs: build
     runs-on: ubuntu-latest
