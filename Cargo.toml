@@ -1,0 +1,20 @@
+[package]
+name = "tgcrypto"
+version = "0.0.1"
+edition = "2024"
+description = "A PHP extension for cryptographic functions using Rust"
+license = "MIT"
+repository = "https://github.com/Tak-Pesar/tgcrypto"
+
+[lib]
+name = "tgcrypto"
+crate-type = ["cdylib"]
+
+[dependencies]
+ext-php-rs = "0.13"
+grammers-crypto = "0.7"
+
+[profile.release]
+lto = true # Enable Link-Time Optimization for better performance
+codegen-units = 1 # Optimize for binary size
+opt-level = "z" # Optimize for size
