@@ -49,7 +49,7 @@ else
 fi
 
 echo "Cleaning and building the project in release mode..."
-# cargo clean
+cargo clean
 cargo build --release
 echo "Build complete !"
 
