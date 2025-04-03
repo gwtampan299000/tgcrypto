@@ -1,0 +1,30 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, windows-latest, windows-2019, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --verbose
+      - name: List output artifacts
+        run: ls -l target/release/
+
+      - name: Upload built library
+      uses: actions/upload-artifact@dc2c2f74680f827d3554be90a17974d46c4d1f63
+      with:
+        name: rust-shared-lib-${{ matrix.os }}
+        path: target/release/
