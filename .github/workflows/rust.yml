@@ -18,11 +18,20 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
+            arch: x86_64
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            arch: armv7
+            target: armv7-unknown-linux-gnueabihf
+          - os: ubuntu-latest
+            arch: aarch64
+            target: aarch64-unknown-linux-gnu
           - os: macos-latest
+            arch: x86_64
+            target: x86_64-apple-darwin
           - os: windows-latest
             arch: x86_64
-          - os: windows-latest
-            arch: x86
+            target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -33,11 +42,7 @@ jobs:
         with:
           php-version: '8.3'
 
-      - name: Add 32-bit Windows target
-        if: matrix.os == 'windows-latest' && matrix.arch == 'x86'
-        run: rustup target add i686-pc-windows-msvc
-
-      - name: Build for ${{ matrix.os }} ${{ matrix.os == 'windows-latest' && matrix.arch || '' }}
+      - name: Build for ${{ matrix.os }} ${{ matrix.arch }}
         shell: bash
         run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
@@ -53,37 +58,14 @@ jobs:
           fi
 
       - name: List build artifacts
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            if [[ "${{ matrix.arch }}" == "x86" ]]; then
-              ls -l target/i686-pc-windows-msvc/release/
-            else
-              ls -l target/x86_64-pc-windows-msvc/release/
-            fi
-          else
-            ls -l target/release/
-          fi
-
-      - name: Determine artifact path
-        id: artifact_path
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            if [[ "${{ matrix.arch }}" == "x86" ]]; then
-              echo "path=target/i686-pc-windows-msvc/release/tgcrypto.dll" >> $GITHUB_OUTPUT
-            else
-              echo "path=target/x86_64-pc-windows-msvc/release/tgcrypto.dll" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "path=target/release/libtgcrypto*" >> $GITHUB_OUTPUT
-          fi
+        run: ls -l target/release/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-${{ matrix.os == 'windows-latest' && matrix.arch || 'binary' }}
-          path: ${{ steps.artifact_path.outputs.path }}
+          name: ${{ runner.os }}-${{ matrix.arch }}
+          path: |
+            ${{ runner.os == 'Windows' && 'target/release/tgcrypto.dll' || 'target/release/libtgcrypto*' }}
 
   release:
     needs: build
