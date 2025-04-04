@@ -59,18 +59,24 @@ jobs:
             ls -l target/release/
           fi
 
+      - name: Determine artifact path
+        id: artifact_path
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            if [[ "${{ matrix.arch }}" == "x86" ]]; then
+              echo "path=target/i686-pc-windows-msvc/release/tgcrypto.dll" >> $GITHUB_OUTPUT
+            else
+              echo "path=target/x86_64-pc-windows-msvc/release/tgcrypto.dll" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "path=target/release/libtgcrypto*" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.os == 'windows-latest' && matrix.arch || 'binary' }}
-          path: |
-            ${{ 
-                matrix.os == 'windows-latest' && 
-                ( matrix.arch == 'x86' 
-                  ? 'target/i686-pc-windows-msvc/release/tgcrypto.dll' 
-                  : 'target/x86_64-pc-windows-msvc/release/tgcrypto.dll' )
-                || 'target/release/libtgcrypto*'
-             }}
+          path: ${{ steps.artifact_path.outputs.path }}
 
   release:
     needs: build
