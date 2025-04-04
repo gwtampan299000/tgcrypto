@@ -93,7 +93,7 @@ jobs:
          done
       - name: Zip macOS artifacts by arch
         run: |
-         for dir in artifacts/MacOS-*; do
+         for dir in artifacts/macOS-*; do
             arch=$(basename "$dir" | cut -d'-' -f2)
             echo "Zipping $dir for arch $arch"
            zip -j "artifacts/macos-${arch}.zip" "$dir"/*.dylib
