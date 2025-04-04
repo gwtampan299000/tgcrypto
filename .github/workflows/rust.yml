@@ -67,7 +67,6 @@ jobs:
         uses: softprops/action-gh-release@v2.2.1
         with:
           tag_name: "v${{ steps.set_tag.outputs.version }}"
-          name: "Release ${{ github.ref_name }}"
           files: |
             artifacts/**/*.so
             artifacts/**/*.dll
