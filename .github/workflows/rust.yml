@@ -63,14 +63,24 @@ jobs:
           echo "Library Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Zip Windows artifacts
+        run: |
+          find artifacts -type f -name "*.dll" -print0 | xargs -0 zip -j artifacts/windows.zip
+      - name: Zip Linux artifacts
+        run: |
+          find artifacts -type f -name "*.so" -print0 | xargs -0 zip -j artifacts/linux.zip
+      - name: Zip macOS artifacts
+        run: |
+          find artifacts -type f -name "*.dylib" -print0 | xargs -0 zip -j artifacts/macos.zip
+
       - name: Create Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           tag_name: "v${{ steps.set_tag.outputs.version }}"
           files: |
-            artifacts/**/*.so
-            artifacts/**/*.dll
-            artifacts/**/*.dylib
+            artifacts/windows.zip
+            artifacts/linux.zip
+            artifacts/macos.zip
 
 
         env:
