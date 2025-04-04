@@ -33,6 +33,10 @@ jobs:
         with:
           php-version: '8.3'
 
+      - name: Add 32-bit Windows target
+        if: matrix.os == 'windows-latest' && matrix.arch == 'x86'
+        run: rustup target add i686-pc-windows-msvc
+
       - name: Build for ${{ matrix.os }} ${{ matrix.os == 'windows-latest' && matrix.arch || '' }}
         shell: bash
         run: |
