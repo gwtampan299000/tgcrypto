@@ -43,19 +43,7 @@ jobs:
           php-version: '8.3'
 
       - name: Build for ${{ matrix.os }} ${{ matrix.arch }}
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            if [[ "${{ matrix.arch }}" == "x86" ]]; then
-              echo "Building 32-bit Windows..."
-              cargo build --release --target=i686-pc-windows-msvc
-            else
-              echo "Building 64-bit Windows..."
-              cargo build --release --target=x86_64-pc-windows-msvc
-            fi
-          else
-            cargo build --release
-          fi
+        run: cargo build --release
 
       - name: List build artifacts
         run: ls -l target/release/
