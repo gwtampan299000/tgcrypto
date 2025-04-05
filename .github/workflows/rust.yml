@@ -48,6 +48,22 @@ jobs:
       - name: List build artifacts
         run: ls -l target/release/
 
+      - name: Test PHP extension on all platforms
+        shell: bash
+        run: |
+          echo "Testing PHP extension..."
+
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            Rename-Item "target\release\tgcrypto.dll" "target\release\php_tgcrypto.dll"
+            php -d extension_dir="target/release" -d extension=php_tgcrypto.dll -r "var_dump(extension_loaded('tgcrypto'));"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            mv target/release/libtgcrypto.dylib target/release/php_tgcrypto.dylib
+            php -d extension_dir="target/release" -d extension=php_tgcrypto.dylib -r "var_dump(extension_loaded('tgcrypto'));"
+          else
+            mv target/release/libtgcrypto.so target/release/php_tgcrypto.so
+            php -d extension_dir="target/release" -d extension=php_tgcrypto.so -r "var_dump(extension_loaded('tgcrypto'));"
+          fi
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
