@@ -54,14 +54,11 @@ jobs:
           echo "Testing PHP extension..."
 
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            Rename-Item "target\release\tgcrypto.dll" "target\release\php_tgcrypto.dll"
-            php -d extension_dir="target/release" -d extension=php_tgcrypto.dll -r "var_dump(extension_loaded('tgcrypto'));"
+            php -d extension="target\release\tgcrypto.dll" -r "var_dump(extension_loaded('tgcrypto'));"
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            mv target/release/libtgcrypto.dylib target/release/php_tgcrypto.dylib
-            php -d extension_dir="target/release" -d extension=php_tgcrypto.dylib -r "var_dump(extension_loaded('tgcrypto'));"
+            php -d extension="target/release/libtgcrypto.dylib" -r "var_dump(extension_loaded('tgcrypto'));"
           else
-            mv target/release/libtgcrypto.so target/release/php_tgcrypto.so
-            php -d extension_dir="target/release" -d extension=php_tgcrypto.so -r "var_dump(extension_loaded('tgcrypto'));"
+            php -d extension="target/release/libtgcrypto.so" -r "var_dump(extension_loaded('tgcrypto'));"
           fi
 
       - name: Upload artifact
